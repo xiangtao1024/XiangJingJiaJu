@@ -1,0 +1,24 @@
+server:
+ port: 8096
+ 
+logging:
+ level:
+  com:
+   light:
+    springboot: DEBUG
+
+spring:
+ mvc:
+  date-format: yyy-MM-dd HH:mm:ss
+ datasource:
+  url: jdbc:mysql://localhost:3306/sentense?serverTimezone=Hongkong&useUnicode=true&characterEncoding=UTF-8
+  username: root
+  password: root
+  driver-class-name: com.mysql.jdbc.Driver
+ jpa:
+  properties:
+   hibernate:
+    hbm2ddl:
+     auto: update
+    dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+  show-sql: true

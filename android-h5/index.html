@@ -1,0 +1,86 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="./css/api.css" />
+    <link rel="stylesheet" type="text/css" href="./css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="./css/iconfont/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="./css/style.css" />
+    <style type="text/css">
+        #footer{
+            border-top: 1px solid #F5F5F5;
+        }
+    </style>
+</head>
+<body>
+    <footer class="aui-bar aui-bar-tab" id="footer">
+        <div class="aui-bar-tab-item aui-active" tapmode>
+            <i class="aui-iconfont aui-icon-home"></i>
+            <div class="aui-bar-tab-label">美句</div>
+        </div>
+        <div class="aui-bar-tab-item" tapmode>
+            <div class="aui-dot"></div>
+            <i class="iconfont icon-fenlei"></i>
+            <div class="aui-bar-tab-label">分类</div>
+        </div>
+        <!--
+        <div class="aui-bar-tab-item" tapmode>
+            <div class="aui-dot"></div>
+            <i class="aui-iconfont aui-icon-comment"></i>
+            <div class="aui-bar-tab-label">交流</div>
+        </div>
+        -->
+        <div class="aui-bar-tab-item" tapmode>
+            <div class="aui-dot"></div>
+            <i class="aui-iconfont aui-icon-my"></i>
+            <div class="aui-bar-tab-label">我的</div>
+        </div>
+    </footer>
+</body>
+<script type="text/javascript" src="./script/api.js"></script>
+<script type="text/javascript" src="./script/aui-tab.js" ></script>
+<script type="text/javascript">
+    apiready = function(){
+        openFrame(1);
+        var tab = new auiTab({
+            element:document.getElementById("footer"),
+            index:1,
+            repeatClick:false
+        },function(ret){
+            openFrame(ret.index);
+        });
+    };
+
+    function openFrame(id){
+        var path = "./html/home.html";
+        switch(id){
+            case 1:
+                path = "./html/home.html";
+            break;
+            case 2:
+                path = "./html/fenlei.html";
+            break;
+            // case 3:
+            //     path = "./html/shequ.html";
+            // break;
+            case 3:
+                path = "./html/my.html";
+            break;
+        }
+        api.openFrame({
+            name: path,
+            url: path,
+            rect: {
+                x: 0,
+                y: 0,
+                w: api.winWidth,
+                h: api.winHeight - $api.offset($api.byId("footer")).h,
+            },
+            bounces: true,
+            bgColor: 'rgba(0,0,0,0)',
+        });
+    }
+</script>
+</html>

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <% include("../../common/common_css.html"){} %>
+</head>
+<body>
+<div id="app">
+	<el-row>
+		<el-col :md="{span:22, offset:1}" :lg="{span:14, offset:4}" style="background: #fff;min-height: 800px">
+			<% include("../../common/header.html"){} %>	
+			
+			<el-container>
+				<el-main>
+					<el-row>
+						<el-popover
+							  placement="right"
+							  width="400"
+							  trigger="click">
+							  <el-card>
+								  	<div slot="header">
+								    	<span>添加</span>
+								  	</div>
+								  	<el-row>
+								  		<el-col :span="3" style="line-height: 42px">
+								  			<span>标题: </span>
+								  		</el-col>
+								  		<el-col :span="21">
+								 			<el-input
+											  placeholder="请输入分类"
+											  v-model="inputCategory"
+											  clearable>
+											</el-input>
+								 		</el-col>
+							  		</el-row>
+							  		<el-row style="margin-top: 5px;">
+								  		<el-col :span="3" style="line-height: 42px">
+								  			<span>图标: </span>
+								  		</el-col>
+								  		<el-col :span="21">
+								 			<img v-bind:src='imageUrl' width="50px" height="50px"/>
+								 		</el-col>
+							  		</el-row>
+							  		<el-row style="margin-top: 5px;">
+								  		<el-col :span="3" style="line-height: 42px">
+								  			<span>上传: </span>
+								  		</el-col>
+								  		<el-col :span="21">
+								 			<el-upload
+								               :action="fileUploadUrl"
+								               name="file"
+								               :headers="uploadHeaders"
+								               :on-error="uploadError"
+								               :on-success="uploadSuccessAdd"
+								               :before-upload="beforeUpload">
+								            	<el-button slot="trigger" size="small" type="primary" plain>选取图标</el-button>
+								            </el-upload>
+								 		</el-col>
+							  		</el-row>
+									<div style="margin-top: 15px;text-align: center">
+								  		<el-button type="success" @click="addCategory">提交</el-button>
+									</div>
+							  </el-card>
+							  <el-button slot="reference" type="primary">添加</el-button>
+						</el-popover>
+					</el-row>
+					
+					<br>
+					<el-row>
+						<el-table
+						    :data="tableData"
+						    border
+						    style="width: 100%">
+						    <el-table-column
+						      prop="id"
+						      label="ID"
+						      width="60">
+						    </el-table-column>
+						    <el-table-column
+						      prop="name"
+						      label="标题"
+						      width="180">
+						    </el-table-column>
+						    <el-table-column
+						      label="图标"
+						      width="120">
+						      <template slot-scope="scope">
+						        <img v-bind:src="scope.row.icon" width="100px" height="48px">
+						      </template>
+						    </el-table-column>
+						    <el-table-column
+						      prop="createTime"
+						      label="创建时间">
+						    </el-table-column>
+						    <el-table-column
+						      prop="updateTime"
+						      label="最后更新时间">
+						    </el-table-column>
+						    <el-table-column
+						    	label="操作"
+						    	width="180">
+						    	<template slot-scope="scope">
+						    		<el-popover
+										  placement="right"
+										  width="400"
+										  trigger="click">
+										  <el-card>
+											  	<div slot="header">
+											    	<span>编辑</span>
+											  	</div>
+											  	<el-row>
+											  		<el-col :span="3" style="line-height: 42px">
+											  			<span>标题: </span>
+											  		</el-col>
+											  		<el-col :span="21">
+											 			<el-input v-model="scope.row.name"></el-input>
+											 		</el-col>
+										  		</el-row>
+										  		<el-row style="margin-top: 5px;">
+											  		<el-col :span="3" style="line-height: 42px">
+											  			<span>图标: </span>
+											  		</el-col>
+											  		<el-col :span="21">
+											 			<img v-bind:src="scope.row.icon" width="160px" height="100px"/>
+											 		</el-col>
+										  		</el-row>
+										  		<el-row style="margin-top: 5px;">
+											  		<el-col :span="3" style="line-height: 42px">
+											  			<span>上传: </span>
+											  		</el-col>
+											  		<el-col :span="21">
+											 			<el-upload
+											               :action="fileUploadUrl"
+											               name="file"
+											               :data="scope.row"
+											               :headers="uploadHeaders"
+											               :on-error="uploadError"
+											               :on-success="uploadSuccessEdit">
+											            	<el-button @click="beforeUpload(scope.row)" slot="trigger" size="small" icon="el-icon-upload" plain></el-button>
+											            </el-upload>
+											 		</el-col>
+										  		</el-row>
+												<div style="margin-top: 15px;text-align: center">
+											  		<el-button type="success" @click="updateItem(scope.row)">提交</el-button>
+												</div>
+										  </el-card>
+										  <el-button slot="reference" type="success" size="small">编辑</el-button>
+									</el-popover>
+									<el-button slot="reference" type="danger" size="small" @click="deleteItem(scope.row)">删除</el-button>
+						    	</template>
+						    </el-table-column>
+						</el-table>
+						<br>
+						<el-pagination
+						  background
+						  :current-page="pageCurrent"
+						  :page-size="pageSize"
+						  :total="pageTotal"
+						  @current-change="pageChange">
+						</el-pagination>
+					</el-row>
+				</el-main>
+			</el-container>	
+		</el-col>
+	</el-row>
+</div>
+</body>
+<% include("../../common/common_js.html"){} %>
+<script>
+var vue = new Vue({
+	el: '#app',
+    data: {
+    	  activeIndex: '2',
+    	  inputCategory: "",
+    	  fileUploadUrl: '/file/upload.api',
+    	  imageUrl: null,
+    	  tableData: [],
+    	  pageCurrent: 1,
+    	  pageSize: 10,
+    	  pageTotal: 0,
+    	  uploadHeaders: Apicheck.getHeaders(),
+    	  editItemTemp: null,
+    },
+    methods: {
+    	handleNavSelect(key, keyPath) {
+    		Application.openNav(key)
+   	    },
+   	 	beforeUpload(data){
+   	    	this.editItemTemp = data;
+   	    	console.log('beforeUpload', this.editItemTemp)
+   	    },
+   	 	uploadSuccessAdd(res){
+   	    	if(res.code == 1001){
+   	    		this.imageUrl = res.data;
+   	    		this.$message({
+			        message: res.msg,
+			        type: 'success'
+			    })
+   	    	}else{
+   	    		this.$message.error('图标上传失败');
+   	    	}
+   	    },
+   	 	uploadSuccessEdit(res){
+   	    	console.log('uploadSuccessEdit', this.editItemTemp);
+   	    	for(var i = 0; i < this.tableData.length; i ++){
+   	    		if(this.editItemTemp.id == this.tableData[i].id){
+   	    			this.tableData[i].icon = res.data;
+   	    		}
+   	    	}
+   	    },
+   	 	uploadError(){
+   	    	console.log('uploadError', 'uploadError')
+   	    },
+   	 	pageChange(data){
+   	    	this.pageCurrent = data;
+   	    	Category.finds();
+   	    },
+   	    addCategory(){
+   	    	Category.addCategory(this, this.inputCategory, this.imageUrl);
+   	    },
+   	 	updateItem(item){
+   	    	Category.updateCategory(vue, item);
+   	    },
+   	 	deleteItem(item){
+   	    	this.$confirm("此操作将永久删除改行数据，是否继续?", "删除提示", {
+   	    		confimButtonText: "确定",
+   	    		cancelButtonText: "取消",
+   	    		type: "warning"
+   	    	}).then(function(){
+   	    		Category.deleteCategory(vue, item)
+   	    	}).catch(function(){
+   	    		this.$notify.info({
+   	             	title: '删除提示',
+   	             	message: '你取消了删除'
+   	           	});
+   	    	})
+   	    }
+   }
+})
+
+var Category = {
+	url: '/category',
+	init(){
+		this.finds();
+	},
+	finds(){
+		$.ajax({
+			url: this.url + "/finds.api",
+			type: "post",
+			data: {
+				page: vue.pageCurrent,
+				size: vue.pageSize
+			},
+			headers: Apicheck.getHeaders(),
+			success: function(res){
+				vue.pageCurrent = res.data.number + 1;
+				vue.pageTotal = res.data.totalElements;
+				if(res.code == 1001){
+					vue.tableData = res.data.content;
+				}
+			}
+		});
+	},
+	addCategory(vue, name, icon){
+		var self = this;
+		$.ajax({
+			url: this.url + "/add.api",
+			type: "post",
+			data: {
+				name: name,
+				icon: icon
+			},
+			headers: Apicheck.getHeaders(),
+			success: function(res){
+				if(res.code == 1001){
+				    vue.$notify({
+				        title: '添加提示',
+				        message: res.msg,
+				        type: 'success'
+				    });
+				    self.finds();
+				}else{
+					vue.$notify.error({
+				          title: '添加提示',
+				          message: res.msg
+				    });
+				}
+			}
+		});
+	},
+	updateCategory(vue, item){
+		$.ajax({
+			url: this.url + "/update.api",
+			type: "post",
+			data: item,
+			headers: Apicheck.getHeaders(),
+			success: function(res){
+				if(res.code == 1001){
+					vue.$notify({
+				        title: '更新提示',
+				        message: res.msg,
+				        type: 'success'
+				    });
+				}else{
+					vue.$notify.error({
+				          title: '更新提示',
+				          message: res.msg
+				    });
+				}
+			}
+		});
+	},
+	deleteCategory(vue, item){
+		var self = this;
+		$.ajax({
+			url: this.url + "/delete.api",
+			type: "post",
+			data: {
+				id: item.id
+			},
+			headers: Apicheck.getHeaders(),
+			success: function(res){
+				if(res.code == 1001){
+					vue.$notify({
+				        title: '删除提示',
+				        message: res.msg,
+				        type: 'success'
+				    });
+					self.finds();
+				}else{
+					vue.$notify.error({
+				          title: '删除提示',
+				          message: res.msg
+				    });
+				}
+			}
+		});
+	},
+}
+
+$(function(){
+	Category.init();
+})
+</script>
+</html>

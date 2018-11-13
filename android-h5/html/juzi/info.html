@@ -1,0 +1,141 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,aItemress=no">
+    <title>AUI快速完成布局</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/iconfont/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/style.css" />
+    <style>
+        .search-input {
+            height: 1.6rem;
+            line-height: 1.6rem;
+            background: #f5f5f5;
+            border-radius: 30px;
+            position: relative;
+            font-family:"aui_iconfont" !important;
+            text-align: left;
+            padding-left: 1.5rem;
+            color: #999999;
+        }
+    </style>
+</head>
+<body>
+    <header class="aui-bar aui-bar-nav">
+        <a class="aui-pull-left aui-btn" onclick="cancelEvt()">
+            <span class="aui-iconfont aui-icon-left"></span>
+        </a>
+        <div class="aui-title" style="color:#fff">
+            朱自清 - <<散文集>>
+        </div>
+    </header>
+
+    <section class="aui-content-padded">
+        <div class="aui-card-list">
+            <div class="aui-card-list-content-padded">
+                内容区域，卡片列表布局样式可以实现APP中常见的各类样式
+            </div>
+            <div class="aui-card-list-footer aui-border-t">
+                <div>
+                    <span>2048 赞</span> - <span>295 评论</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="aui-content-padded">
+        <div class="aui-card-list">
+            <div class="aui-card-list-header aui-card-list-user aui-border-b">
+                <div class="aui-card-list-user-avatar">
+                    <img src="../../image/demo1.png" class="aui-img-round" />
+                </div>
+                <div class="aui-card-list-user-name">
+                    <div>张三</div>
+                    <small>2018-09-11 01:25:55</small>
+                </div>
+                <div class="aui-card-list-user-info">北京朝阳 发布</div>
+            </div>
+            <div class="aui-card-list-content-padded">
+                <div style="text-align:center">
+                    <div class="aui-btn aui-btn-outlined aui-btn-success"><i class="aui-iconfont aui-icon-star"></i></div>
+                    <div class="aui-btn aui-btn-outlined aui-btn-primary"><i class="aui-iconfont aui-icon-laud"></i></div>
+                    <div class="aui-btn aui-btn-outlined aui-btn-info"><i class="aui-iconfont aui-icon-plus"></i></div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="aui-content-padded">
+        <div class="aui-card-list">
+            <div class="aui-card-list-header">
+                评论
+            </div>
+            <div class="aui-card-list-content-padded aui-border-t">
+                <div class="aui-card-list">
+                    <div class="aui-card-list-header aui-card-list-user aui-border-t aui-border-b">
+                        <div class="aui-card-list-user-avatar">
+                            <img src="../../image/demo1.png" class="aui-img-round" />
+                        </div>
+                        <div class="aui-card-list-user-name">
+                            <div style="font-size: 0.5rem">张三</div>
+                            <small>2018-09-11 01:25:55</small>
+                        </div>
+                        <div class="aui-card-list-user-info">这个哈哈这个哈哈这个哈哈这个哈哈这个哈哈这个哈哈这个哈哈哈哈</div>
+                    </div>
+                </div>
+                <div class="aui-card-list">
+                    <div class="aui-card-list-header aui-card-list-user aui-border-t aui-border-b">
+                        <div class="aui-card-list-user-avatar">
+                            <img src="../../image/demo1.png" class="aui-img-round" />
+                        </div>
+                        <div class="aui-card-list-user-name">
+                            <div style="font-size: 0.5rem">张三</div>
+                            <small>2018-09-11 01:25:55</small>
+                        </div>
+                        <div class="aui-card-list-user-info">这个哈哈这个哈哈这个哈哈这个哈哈这个哈哈这个哈哈这个哈哈哈哈</div>
+                    </div>
+                </div>
+                <div class="aui-card-list">
+                    <div class="aui-card-list-header aui-card-list-user aui-border-t aui-border-b">
+                        <div class="aui-card-list-user-avatar">
+                            <img src="../../image/demo1.png" class="aui-img-round" />
+                        </div>
+                        <div class="aui-card-list-user-name">
+                            <div style="font-size: 0.5rem">张三</div>
+                            <small>2018-09-11 01:25:55</small>
+                        </div>
+                        <div class="aui-card-list-user-info">这个哈哈这个哈哈这个哈哈这个哈哈这个哈哈这个哈哈这个哈哈哈哈</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <footer class="aui-bar aui-bar-tab aui-margin-t-15 aui-border-t">
+        <div class="aui-bar-tab-item aui-padded-l-15 aui-padded-r-15" tapmode style="width: auto;">
+            <div class="search-input">
+                <input type="text" style="height: 100%;font-size:0.7rem" placeholder="请输入评论内容">
+            </div>
+        </div>
+        <div class="aui-bar-tab-item" tapmode style="width: 2.2rem;">
+            <i class="aui-iconfont aui-icon-comment"></i>
+        </div>
+        <div class="aui-bar-tab-item" tapmode style="width: 2.2rem;">
+            <i class="aui-iconfont aui-icon-share"></i>
+        </div>
+    </footer>
+</body>
+<script type="text/javascript" src="../script/api.js" ></script>
+<script type="text/javascript">
+    apiready = function(){
+        api.parseTapmode();
+    }
+    function cancelEvt(){
+        api.closeWin({
+
+        });
+
+    }
+</script>
+</html>

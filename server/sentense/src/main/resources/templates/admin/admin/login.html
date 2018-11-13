@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<% include("../../common/common_css.html"){} %>
+<style>
+html,body{
+  width: 100%;
+  height: 100%;
+  margin:0;
+  padding:0;
+  display:flex;
+  align-items:center;/*垂直居中*/
+  justify-content: center;/*水平居中*/
+}
+</style>
+</head>
+<body>
+	<div id="app">
+		<el-container>
+	  		<el-main>
+	  			<el-card class="box-card">
+					<div slot="header" class="clearfix">
+					    <span>香径佳句 - 后台管理登陆</span>
+					</div>
+				 	<div class="text item">
+				 		<div>
+					  		<el-input v-model="username" placeholder="请输入用户名" v-model="input3">
+					    		<template slot="prepend">用户名</template>
+					  		</el-input>
+						</div>
+						<div style="margin-top: 15px">
+					  		<el-input type="password" v-model="password" placeholder="请输入密码" v-model="input3">
+					    		<template slot="prepend">密 &nbsp; 码</template>
+					  		</el-input>
+						</div>
+						<div style="margin-top: 15px;text-align: center">
+					  		<el-button type="primary" @click="onSubmit">登陆</el-button>
+						</div>
+				  	</div>
+				</el-card>
+	  		</el-main>
+		</el-container>
+	</div>
+	<% include("../../common/footer.html"){} %>
+	<% include("../../common/common_js.html"){} %>
+</body>
+
+<script>
+    new Vue({
+      el: '#app',
+      data: {
+    	  username: "",
+    	  password: "",
+      },
+      methods:{
+    	  onSubmit: function(){
+    		  console.log(this.username, this.password)
+    		  var self = this;
+    		  $.ajax({
+    			  url: "/admin/login.api",
+    			  type: "post",
+    			  data: {username: this.username, password: this.password},
+    			  headers: Apicheck.getHeaders(),
+    			  success: function(res){
+    				  console.log(res);
+    				  if(res.code == 1001){
+    					  self.$message({
+    				          message: res.msg,
+    				          type: 'success'
+    				      });
+    					  location.href = "/admin/index.html"
+    				  }else{
+    					  self.$message.error(res.msg);
+    				  }
+    			  }
+    		  });
+    	  }
+      }
+    })
+</script>
+</html>

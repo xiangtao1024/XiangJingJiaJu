@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <% include("../../common/common_css.html"){} %>
+</head>
+<body>
+<div id="app">
+	<el-row>
+		<el-col :md="{span:22, offset:1}" :lg="{span:14, offset:4}" style="background: #fff;;min-height: 800px">
+			<% include("../../common/header.html"){} %>	
+			
+			<el-container>
+				<el-header>首页</el-header>
+				<el-main>
+					
+				</el-main>
+			</el-container>	
+		</el-col>
+	</el-row>
+</div>
+</body>
+  <!-- import Vue before Element -->
+  <% include("../../common/common_js.html"){} %>
+  <script>
+    new Vue({
+      el: '#app',
+      data: {
+    	  activeIndex: '1'
+      },
+      methods: {
+    	  handleNavSelect(key, keyPath) {
+    		  Application.openNav(key)
+   	      }
+      }
+    })
+  </script>
+</html>
