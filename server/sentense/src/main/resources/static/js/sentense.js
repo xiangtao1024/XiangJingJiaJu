@@ -37,6 +37,9 @@ var Application = {
 			case "6":
 				location.href = "/admin/user/index.html";
 				break;
+			case "7":
+				location.href = "/admin/comment/index.html";
+				break;
 			default:
 				console.log(index,"default")
 				break;
@@ -44,3 +47,4 @@ var Application = {
 		
 	}
 }
+

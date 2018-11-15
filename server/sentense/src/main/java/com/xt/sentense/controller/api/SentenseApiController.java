@@ -1,7 +1,12 @@
 package com.xt.sentense.controller.api;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
+import org.nutz.json.Json;
+import org.nutz.lang.util.NutMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -10,8 +15,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.xt.sentense.constant.Res;
+import com.xt.sentense.entity.Category;
+import com.xt.sentense.entity.CategoryRepository;
 import com.xt.sentense.entity.Sentense;
 import com.xt.sentense.entity.SentenseRepository;
+import com.xt.sentense.entity.User;
+import com.xt.sentense.entity.UserRepository;
+import com.xt.sentense.service.SentenseService;
+import com.xt.sentense.vo.PageList;
+import com.xt.sentense.vo.SentenseVo;
+import com.xt.sentense.vo.UserVo;
 /**
  * 句子api接口类
  * @author XiangTao
@@ -22,7 +35,8 @@ import com.xt.sentense.entity.SentenseRepository;
 public class SentenseApiController {
 	@Autowired
 	private SentenseRepository sentenseRepository;
-	
+	@Autowired
+	private SentenseService sentenseService;
 	
 	@RequestMapping("/add.api")
 	public Res add(Sentense sentense){
@@ -31,16 +45,16 @@ public class SentenseApiController {
 		try{
 			sentense = sentenseRepository.saveAndFlush(sentense);
 			if(sentense != null){
-				return Res.NEW().code(Res.SUCCESS).msg("添加成功").data(sentense);
+				return Res.NEW().code(Res.SUCCESS).msg("发布成功").data(sentense);
 			}else{
-				return Res.NEW().code(Res.ERROR).msg("添加失败").data(sentense);
+				return Res.NEW().code(Res.ERROR).msg("发布失败").data(sentense);
 			}
 		}catch(Exception e){
 			e.printStackTrace();
 			if(e.getMessage().matches(".*constraint.*UK.*")){
-				return Res.NEW().code(Res.ERROR).msg("添加失败: 该条数据已经存在");
+				return Res.NEW().code(Res.ERROR).msg("发布失败: 该条数据已经存在");
 			}else{
-				return Res.NEW().code(Res.ERROR).msg("添加失败: " + e.getMessage());
+				return Res.NEW().code(Res.ERROR).msg("发布失败: " + e.getMessage());
 			}
 		}
 	}
@@ -81,17 +95,24 @@ public class SentenseApiController {
 			return Res.NEW().code(Res.ERROR).msg("删除失败: " + e.getMessage());
 		}
 	}
+	
 	@RequestMapping("/finds.api")
 	public Res finds(int page, int size){
-		Pageable p = new PageRequest(page - 1, size);
-		Page<Sentense> datas = sentenseRepository.findAll(p);
-		return Res.NEW().code(Res.SUCCESS).msg("ok").data(datas);
+		return Res.NEW().code(Res.SUCCESS).msg("ok").data(sentenseService.finds(page - 1, size));
+	}
+	@RequestMapping("/findByCatgegoryId.api")
+	public Res findByCatgegoryId(int page, int size, Long categoryId){
+		return Res.NEW().code(Res.SUCCESS).msg("ok").data(sentenseService.findByCatgegoryId(page - 1, size, categoryId));
+	}
+	@RequestMapping("/findByUserId.api")
+	public Res findByUserId(int page, int size, Long userId){
+		return Res.NEW().code(Res.SUCCESS).msg("ok").data(sentenseService.findByUserId(page - 1, size, userId));
 	}
 	
 	@RequestMapping("/findById.api")
 	public Res findById(Long id){
 		try{
-			Sentense u = sentenseRepository.getOne(id);
+			SentenseVo u = sentenseService.findById(id);
 			if(u != null){
 				return Res.NEW().code(Res.SUCCESS).msg("Ok").data(u);
 			}else{

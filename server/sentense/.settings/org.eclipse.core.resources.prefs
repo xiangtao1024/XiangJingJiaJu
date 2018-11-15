@@ -2,6 +2,7 @@ eclipse.preferences.version=1
 encoding//src/main/java=UTF-8
 encoding//src/main/resources=UTF-8
 encoding//src/main/resources/beetl.properties=UTF-8
+encoding//src/main/resources/hanlp.properties=UTF-8
 encoding//src/main/resources/templates/common/common_css.html=UTF-8
 encoding//src/main/resources/templates/common/common_js.html=UTF-8
 encoding//src/main/resources/templates/common/footer.html=UTF-8

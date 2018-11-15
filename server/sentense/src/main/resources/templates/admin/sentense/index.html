@@ -15,7 +15,7 @@
 					<el-row>
 						<el-popover
 							  placement="right"
-							  width="400"
+							  width="500"
 							  trigger="click">
 							  <el-card>
 								  	<div slot="header">
@@ -26,11 +26,14 @@
 								  			<span>分类: </span>
 								  		</el-col>
 								  		<el-col :span="18">
-								 			<el-input
-											  placeholder="请输入分类ID"
-											  v-model="inputSentense.categoryId"
-											  clearable>
-											</el-input>
+											<el-select v-model="inputSentense.categoryId" placeholder="请选择">
+											    <el-option
+											      v-for="category in categorys"
+											      :key="category.id"
+											      :label="category.name"
+											      :value="category.id">
+											    </el-option>
+											</el-select>
 								 		</el-col>
 							  		</el-row>
 							  		<el-row style="margin-top: 5px">
@@ -50,11 +53,9 @@
 								  			<span>场景: </span>
 								  		</el-col>
 								  		<el-col :span="18">
-								 			<el-input
-											  placeholder="请输入场景"
-											  v-model="inputSentense.scenes"
-											  clearable>
-											</el-input>
+											<el-checkbox-group v-model="checkboxScene">
+												<el-checkbox v-for="scene in scenes" :label="scene.name" border></el-checkbox>
+											</el-checkbox-group>
 								 		</el-col>
 							  		</el-row>
 							  		<el-row style="margin-top: 5px">
@@ -63,7 +64,7 @@
 								  		</el-col>
 								  		<el-col :span="18">
 								 			<el-input
-											  placeholder="请输入场景"
+											  placeholder="请输入标签"
 											  v-model="inputSentense.labels"
 											  clearable>
 											</el-input>
@@ -81,38 +82,17 @@
 											</el-input>
 								 		</el-col>
 							  		</el-row>
-							  		<el-row style="margin-top: 5px">
-								  		<el-col :span="6" style="line-height: 42px">
-								  			<span>赞数量: </span>
-								  		</el-col>
-								  		<el-col :span="18">
-								 			<el-input
-											  placeholder="请输入赞数量"
-											  v-model="inputSentense.zanNum"
-											  clearable>
-											</el-input>
-								 		</el-col>
-							  		</el-row>
-							  		<el-row style="margin-top: 5px">
-								  		<el-col :span="6" style="line-height: 42px">
-								  			<span>评论数量: </span>
-								  		</el-col>
-								  		<el-col :span="18">
-								 			<el-input
-											  placeholder="请输入评论数量"
-											  v-model="inputSentense.commentNum"
-											  clearable>
-											</el-input>
-								 		</el-col>
-							  		</el-row>
+							  		
 							  		<el-row style="margin-top: 5px">
 								  		<el-col :span="6" style="line-height: 42px">
 								  			<span>内容: </span>
 								  		</el-col>
 								  		<el-col :span="18">
 								 			<el-input
+								 			  type="textarea"
 											  placeholder="请输入内容"
 											  v-model="inputSentense.content"
+											  @blur.prevent="contentBlur()"
 											  clearable>
 											</el-input>
 								 		</el-col>
@@ -137,14 +117,14 @@
 						      width="60">
 						    </el-table-column>
 						    <el-table-column
-						      prop="categoryId"
+						      prop="category.name"
 						      label="分类"
-						      width="180">
+						      width="90">
 						    </el-table-column>
 						    <el-table-column
-						      prop="userId"
-						      label="用户ID"
-						      width="180">
+						      prop="user.nickname"
+						      label="用户"
+						      width="90">
 						    </el-table-column>
 						    <el-table-column
 						      prop="scenes"
@@ -164,12 +144,12 @@
 						    <el-table-column
 						      prop="zanNum"
 						      label="赞"
-						      width="180">
+						      width="60">
 						    </el-table-column>
 						    <el-table-column
 						      prop="commentNum"
 						      label="评论"
-						      width="180">
+						      width="60">
 						    </el-table-column>
 						    <el-table-column
 						      prop="content"
@@ -291,23 +271,51 @@ var vue = new Vue({
 	el: '#app',
     data: {
     	  activeIndex: '5',
-    	  inputSentense: {},
-    	  tableData: [],
+    	  categorys: [], //分类列表
+    	  scenes: [], //场景列表
+    	  inputSentense: {}, //添加表单提交的数据
+    	  checkboxScene: [], //添加表单场景多选框
+    	  tableData: [], //页面数据
     	  pageCurrent: 1,
     	  pageSize: 10,
     	  pageTotal: 0,
     	  uploadHeaders: Apicheck.getHeaders(),
-    	  editItemTemp: null,
+    	  editItemTemp: null, //编辑项目临时变量
     },
     methods: {
     	handleNavSelect(key, keyPath) {
     		Application.openNav(key)
+   	    },
+   	 	contentBlur(){
+   	    	var self = this;
+   	    	$.ajax({
+   				url: "/label/labels.api",
+   				type: "post",
+   				data: {
+   					content: this.inputSentense.content,
+   				},
+   				headers: Apicheck.getHeaders(),
+   				success: function(res){
+   					if(res.code == 1001){
+   						self.inputSentense.labels = res.data[0];
+   						for(var i = 1; i < res.data.length; i ++){
+   							self.inputSentense.labels += ', ' + res.data[i];
+   						}
+   					}
+   				}
+   			});
    	    },
    	 	pageChange(data){
    	    	this.pageCurrent = data;
    	    	Sentense.finds();
    	    },
    	    addSentense(){
+   	    	if(this.checkboxScene && this.checkboxScene.length > 0){
+   	    		this.inputSentense.scenes = this.checkboxScene[0];
+   	    		for(var i = 1; i < this.checkboxScene.length; i ++){
+   	    			this.inputSentense.scenes += ', ' + this.checkboxScene[i];
+   	   	    	}
+   	    	}
    	    	Sentense.addSentense(this, this.inputSentense);
    	    },
    	 	updateItem(item){
@@ -333,8 +341,42 @@ var vue = new Vue({
 var Sentense = {
 	url: '/sentense',
 	init(){
+		this.initAddCategorySelect();
+		this.initAddSceneSelect();
 		this.finds();
 	},
+	initAddCategorySelect(){
+    	$.ajax({
+			url: "/category/finds.api",
+			type: "post",
+			data: {
+				page: 1,
+				size: 100
+			},
+			headers: Apicheck.getHeaders(),
+			success: function(res){
+				if(res.code == 1001){
+					vue.categorys = res.data.content;
+				}
+			}
+		});
+    },
+    initAddSceneSelect(){
+    	$.ajax({
+			url: "/scene/finds.api",
+			type: "post",
+			data: {
+				page: 1,
+				size: 100
+			},
+			headers: Apicheck.getHeaders(),
+			success: function(res){
+				if(res.code == 1001){
+					vue.scenes = res.data.content;
+				}
+			}
+		});
+    },
 	finds(){
 		$.ajax({
 			url: this.url + "/finds.api",

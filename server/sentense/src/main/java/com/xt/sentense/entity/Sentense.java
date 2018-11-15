@@ -21,9 +21,9 @@ public class Sentense implements Serializable{
 	@GeneratedValue
 	private Long id;
 	@Column(nullable=false)
-	private int categoryId;
+	private Long categoryId;
 	@Column(nullable=false)
-	private int userId;
+	private Long userId;
 	@Column
 	private String scenes; //多个用逗号相隔
 	@Column
@@ -49,16 +49,16 @@ public class Sentense implements Serializable{
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public int getCategoryId() {
+	public Long getCategoryId() {
 		return categoryId;
 	}
-	public void setCategoryId(int categoryId) {
+	public void setCategoryId(Long categoryId) {
 		this.categoryId = categoryId;
 	}
-	public int getUserId() {
+	public Long getUserId() {
 		return userId;
 	}
-	public void setUserId(int userId) {
+	public void setUserId(Long userId) {
 		this.userId = userId;
 	}
 	public String getScenes() {

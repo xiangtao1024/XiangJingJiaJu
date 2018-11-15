@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <% include("../../common/common_css.html"){} %>
+</head>
+<body>
+<div id="app">
+	<el-row>
+		<el-col :md="{span:22, offset:1}" :lg="{span:14, offset:4}" style="background: #fff;min-height: 800px">
+			<% include("../../common/header.html"){} %>	
+			
+			<el-container>
+				<el-main>
+					<br>
+					<el-row>
+						<el-table
+						    :data="tableData"
+						    border
+						    style="width: 100%">
+						    <el-table-column
+						      prop="id"
+						      label="ID"
+						      width="60">
+						    </el-table-column>
+						    <el-table-column
+						      prop="content"
+						      label="内容"
+						      width="180">
+						    </el-table-column>
+						    <el-table-column
+						      prop="createTime"
+						      label="创建时间">
+						    </el-table-column>
+						    <el-table-column
+						      prop="updateTime"
+						      label="最后更新时间">
+						    </el-table-column>
+						    <el-table-column
+						    	label="操作"
+						    	width="180">
+						    	<template slot-scope="scope">
+									<el-button slot="reference" type="danger" size="small" @click="deleteItem(scope.row)">删除</el-button>
+						    	</template>
+						    </el-table-column>
+						</el-table>
+						<br>
+						<el-pagination
+						  background
+						  :current-page="pageCurrent"
+						  :page-size="pageSize"
+						  :total="pageTotal"
+						  @current-change="pageChange">
+						</el-pagination>
+					</el-row>
+				</el-main>
+			</el-container>	
+		</el-col>
+	</el-row>
+</div>
+</body>
+<% include("../../common/common_js.html"){} %>
+<script>
+var vue = new Vue({
+	el: '#app',
+    data: {
+    	  activeIndex: '7',
+    	  inputComment: "",
+    	  tableData: [],
+    	  pageCurrent: 1,
+    	  pageSize: 10,
+    	  pageTotal: 0,
+    	  uploadHeaders: Apicheck.getHeaders(),
+    	  editItemTemp: null,
+    },
+    methods: {
+    	handleNavSelect(key, keyPath) {
+    		Application.openNav(key)
+   	    },
+   	 	pageChange(data){
+   	    	this.pageCurrent = data;
+   	    	Comment.finds();
+   	    },
+   	 	deleteItem(item){
+   	    	this.$confirm("此操作将永久删除改行数据，是否继续?", "删除提示", {
+   	    		confimButtonText: "确定",
+   	    		cancelButtonText: "取消",
+   	    		type: "warning"
+   	    	}).then(function(){
+   	    		Comment.deleteComment(vue, item)
+   	    	}).catch(function(){
+   	    		this.$notify.info({
+   	             	title: '删除提示',
+   	             	message: '你取消了删除'
+   	           	});
+   	    	})
+   	    }
+   }
+})
+
+var Comment = {
+	url: '/comment',
+	init(){
+		this.finds();
+	},
+	finds(){
+		$.ajax({
+			url: this.url + "/finds.api",
+			type: "post",
+			data: {
+				page: vue.pageCurrent,
+				size: vue.pageSize
+			},
+			headers: Apicheck.getHeaders(),
+			success: function(res){
+				vue.pageCurrent = res.data.number + 1;
+				vue.pageTotal = res.data.totalElements;
+				if(res.code == 1001){
+					vue.tableData = res.data.content;
+				}
+			}
+		});
+	},
+	deleteComment(vue, item){
+		var self = this;
+		$.ajax({
+			url: this.url + "/delete.api",
+			type: "post",
+			data: {
+				id: item.id
+			},
+			headers: Apicheck.getHeaders(),
+			success: function(res){
+				if(res.code == 1001){
+					vue.$notify({
+				        title: '删除提示',
+				        message: res.msg,
+				        type: 'success'
+				    });
+					self.finds();
+				}else{
+					vue.$notify.error({
+				          title: '删除提示',
+				          message: res.msg
+				    });
+				}
+			}
+		});
+	},
+}
+
+$(function(){
+	Comment.init();
+})
+</script>
+</html>

@@ -2,8 +2,6 @@ package com.xt.sentense.controller.api;
 
 import java.util.Date;
 
-import org.apache.logging.log4j.util.Strings;
-import org.nutz.lang.random.R;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -11,31 +9,33 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hankcs.hanlp.HanLP;
 import com.xt.sentense.constant.Res;
-import com.xt.sentense.entity.Label;
-import com.xt.sentense.entity.LabelRepository;
+import com.xt.sentense.entity.Comment;
+import com.xt.sentense.entity.CommentRepository;
+import com.xt.sentense.service.CommentService;
 /**
- * 标签api接口类
+ * 场景api接口类
  * @author XiangTao
  *
  */
 @RestController
-@RequestMapping("/label")
-public class LabelApiController {
+@RequestMapping("/comment")
+public class CommentApiController {
 	@Autowired
-	private LabelRepository labelRepository;
+	private CommentRepository sceneRepository;
+	@Autowired
+	private CommentService commentService;
 	
 	@RequestMapping("/add.api")
-	public Res add(Label label){
-		label.setCreateTime(new Date());
-		label.setUpdateTime(new Date());
+	public Res add(Comment comment){
+		comment.setCreateTime(new Date());
+		comment.setUpdateTime(new Date());
 		try{
-			label = labelRepository.saveAndFlush(label);
-			if(label != null){
-				return Res.NEW().code(Res.SUCCESS).msg("添加成功").data(label);
+			comment = sceneRepository.saveAndFlush(comment);
+			if(comment != null){
+				return Res.NEW().code(Res.SUCCESS).msg("添加成功").data(comment);
 			}else{
-				return Res.NEW().code(Res.ERROR).msg("添加失败").data(label);
+				return Res.NEW().code(Res.ERROR).msg("添加失败").data(comment);
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -46,18 +46,19 @@ public class LabelApiController {
 			}
 		}
 	}
+	
 	@RequestMapping("/update.api")
-	public Res update(Label label){
-		Label c = labelRepository.getOne(label.getId());
+	public Res update(Comment comment){
+		Comment c = sceneRepository.getOne(comment.getId());
 		if(c == null){
 			return Res.NEW().code(Res.ERROR).msg("数据库没有该条记录");
 		}
-		c.setName(label.getName());
-		c.setHotNum(label.getHotNum());
-		c.setSentenseNum(label.getSentenseNum());
+		c.setContent(comment.getContent());
+		c.setSentenseId(comment.getSentenseId());
+		c.setUserId(comment.getUserId());
 		c.setUpdateTime(new Date());
 		try{
-			c = labelRepository.saveAndFlush(c);
+			c = sceneRepository.saveAndFlush(c);
 			if(c != null){
 				return Res.NEW().code(Res.SUCCESS).msg("编辑成功").data(c);
 			}else{
@@ -68,10 +69,11 @@ public class LabelApiController {
 			return Res.NEW().code(Res.ERROR).msg("编辑失败: " + e.getMessage());
 		}
 	}
+	
 	@RequestMapping("/delete.api")
 	public Res delete(Long id){
 		try{
-			labelRepository.deleteById(id);
+			sceneRepository.deleteById(id);
 			return Res.NEW().code(Res.SUCCESS).msg("删除成功");
 		}catch(Exception e){
 			e.printStackTrace();
@@ -80,15 +82,25 @@ public class LabelApiController {
 	}
 	@RequestMapping("/finds.api")
 	public Res finds(int page, int size){
-		Pageable p = new PageRequest(page - 1, size);
-		Page<Label> datas = labelRepository.findAll(p);
+		Pageable p = PageRequest.of(page - 1, size);
+		Page<Comment> datas = sceneRepository.findAll(p);
 		return Res.NEW().code(Res.SUCCESS).msg("ok").data(datas);
+	}
+	
+	@RequestMapping("/findByUserId.api")
+	public Res findByUserId(int page, int size, Long userId){
+		return Res.NEW().code(Res.SUCCESS).msg("ok").data(commentService.findByUserId(page - 1, size, userId));
+	}
+	
+	@RequestMapping("/findBySentenseId.api")
+	public Res findBySentenseId(int page, int size, Long sentenseId){
+		return Res.NEW().code(Res.SUCCESS).msg("ok").data(commentService.findBySentenseId(page - 1, size, sentenseId));
 	}
 	
 	@RequestMapping("/findById.api")
 	public Res findById(Long id){
 		try{
-			Label u = labelRepository.getOne(id);
+			Comment u = sceneRepository.getOne(id);
 			if(u != null){
 				return Res.NEW().code(Res.SUCCESS).msg("Ok").data(u);
 			}else{
@@ -96,19 +108,6 @@ public class LabelApiController {
 			}
 		}catch(Exception e){
 			return Res.NEW().code(Res.ERROR).msg("获取失败: " + e.getMessage());
-		}
-	}
-	
-	@RequestMapping("/labels.api")
-	public Res labels(String content){
-		try{
-			if(Strings.isEmpty(content)){
-				return Res.NEW().code(Res.ERROR).msg("内容不能为空");
-			}
-			return Res.NEW().code(Res.SUCCESS).msg("Ok").data(HanLP.extractKeyword(content, R.random(5, 10)));
-		}catch(Exception e){
-			e.printStackTrace();
-			return Res.NEW().code(Res.ERROR).msg("操作失败: " + e.getMessage());
 		}
 	}
 }

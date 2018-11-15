@@ -33,6 +33,7 @@ public class UserApiController {
 		user.setCreateTime(new Date());
 		user.setUpdateTime(new Date());
 		user.setSalt(R.sg(9).next());
+		user.setPassword(BaseUtil.jiamiPassword(user.getPassword(), user.getSalt()));
 		try{
 			user = userRepository.saveAndFlush(user);
 			if(user != null){
@@ -72,7 +73,7 @@ public class UserApiController {
 		}
 		c.setIcon(user.getIcon());
 		c.setName(user.getName());
-		c.setPassword(user.getPassword());
+		c.setPassword(BaseUtil.jiamiPassword(user.getPassword(), c.getSalt()));
 		c.setNickname(user.getNickname());
 		c.setPhone(user.getPhone());
 		c.setPhoneState(user.getPhoneState());
