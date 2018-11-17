@@ -75,7 +75,7 @@ public class SceneApiController {
 	}
 	@RequestMapping("/finds.api")
 	public Res finds(int page, int size){
-		Pageable p = new PageRequest(page - 1, size);
+		Pageable p = PageRequest.of(page - 1, size);
 		Page<Scene> datas = sceneRepository.findAll(p);
 		return Res.NEW().code(Res.SUCCESS).msg("ok").data(datas);
 	}

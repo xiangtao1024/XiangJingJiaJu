@@ -7,7 +7,8 @@ import com.hankcs.hanlp.HanLP;
 import junit.framework.TestCase;
 
 public class HanLPTest extends TestCase{
-	public void extractKeyword(){
+	public void testExtractKeyword(){
 		System.out.println(HanLP.extractKeyword("就算生活给我们再多失望，我们也要坚持梦想", R.random(5, 10)));
+		assertTrue(true);
 	}
 }

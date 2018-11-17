@@ -15,9 +15,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
  */
 @Entity(name="tb_user")
 public class User implements Serializable{
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 5706857412102961084L;
 	@Id
 	@GeneratedValue
@@ -36,6 +33,8 @@ public class User implements Serializable{
 	private String salt;
 	@Column(nullable=false)
 	private int phoneState;
+	@Column
+	private int grade; //积分
 	
 	@Column(nullable=false)
 	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
@@ -105,11 +104,17 @@ public class User implements Serializable{
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	
+	public int getGrade() {
+		return grade;
+	}
+	public void setGrade(int grade) {
+		this.grade = grade;
+	}
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", name=" + name + ", nickname=" + nickname + ", icon=" + icon + ", phone=" + phone
-				+ ", password=" + password + ", salt=" + salt + ", phoneState=" + phoneState + ", createTime="
-				+ createTime + ", updateTime=" + updateTime + "]";
+				+ ", password=" + password + ", salt=" + salt + ", phoneState=" + phoneState + ", grade=" + grade
+				+ ", createTime=" + createTime + ", updateTime=" + updateTime + "]";
 	}
-	
 }

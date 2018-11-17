@@ -13,6 +13,7 @@ import com.xt.sentense.constant.Res;
 import com.xt.sentense.entity.Comment;
 import com.xt.sentense.entity.CommentRepository;
 import com.xt.sentense.service.CommentService;
+import com.xt.sentense.service.SentenseService;
 /**
  * 场景api接口类
  * @author XiangTao
@@ -25,6 +26,8 @@ public class CommentApiController {
 	private CommentRepository sceneRepository;
 	@Autowired
 	private CommentService commentService;
+	@Autowired
+	private SentenseService sentenseService;
 	
 	@RequestMapping("/add.api")
 	public Res add(Comment comment){
@@ -33,6 +36,7 @@ public class CommentApiController {
 		try{
 			comment = sceneRepository.saveAndFlush(comment);
 			if(comment != null){
+				sentenseService.addComment(comment.getSentenseId());
 				return Res.NEW().code(Res.SUCCESS).msg("添加成功").data(comment);
 			}else{
 				return Res.NEW().code(Res.ERROR).msg("添加失败").data(comment);

@@ -7,6 +7,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.xt.sentense.entity.Category;
@@ -30,11 +32,13 @@ public class CommentService {
 	
 	public PageList findByUserId(int page, int size, Long userId){
 		Pageable p = PageRequest.of(page, size);
+		Sort sort = new Sort(Direction.DESC, "createTime");
 		PageList datas = new PageList(commentRepository.findByUserId(userId, p));
 		return bindOtherData(datas);
 	}
 	public PageList findBySentenseId(int page, int size, Long sentenseId){
-		Pageable p = PageRequest.of(page, size);
+		Sort sort = new Sort(Direction.DESC, "createTime");
+		Pageable p = PageRequest.of(page, size, sort);
 		PageList datas = new PageList(commentRepository.findBySentenseId(sentenseId, p));
 		return bindOtherData(datas);
 	}

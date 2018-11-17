@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.nutz.lang.Strings;
 import org.nutz.lang.random.R;
+import org.nutz.lang.util.NutMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,7 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.xt.sentense.constant.Res;
 import com.xt.sentense.entity.User;
 import com.xt.sentense.entity.UserRepository;
+import com.xt.sentense.service.UserService;
 import com.xt.sentense.utils.BaseUtil;
+import com.xt.sentense.vo.UserVo;
 /**
  * 用户api接口类
  * @author XiangTao
@@ -27,6 +30,8 @@ import com.xt.sentense.utils.BaseUtil;
 public class UserApiController {
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private UserService userService;
 	
 	@RequestMapping(path={"/add.api", "/regist.api"})
 	public Res add(User user){
@@ -58,8 +63,9 @@ public class UserApiController {
 			return Res.NEW().code(Res.ERROR).msg("登录失败， 该手机号还未注册");
 		}
 		User dbUser = users.get(0);
-		if(Strings.equals(BaseUtil.jiamiPassword(user.getPassword(), user.getSalt()), dbUser.getPassword())){
-			return Res.NEW().code(Res.SUCCESS).msg("登录成功");
+		
+		if(Strings.equals(BaseUtil.jiamiPassword(user.getPassword(), dbUser.getSalt()), dbUser.getPassword())){
+			return Res.NEW().code(Res.SUCCESS).msg("登录成功").data(dbUser);
 		}else{
 			return Res.NEW().code(Res.ERROR).msg("登录失败， 账号密码不正确");
 		}
@@ -110,14 +116,16 @@ public class UserApiController {
 	
 	@RequestMapping("/findById.api")
 	public Res findById(Long id){
+		System.out.println("id: " + id);
 		try{
-			User u = userRepository.getOne(id);
+			UserVo u = userService.findById(id);
 			if(u != null){
 				return Res.NEW().code(Res.SUCCESS).msg("Ok").data(u);
 			}else{
 				return Res.NEW().code(Res.ERROR).msg("获取失败,没有此记录");
 			}
 		}catch(Exception e){
+			e.printStackTrace();
 			return Res.NEW().code(Res.ERROR).msg("获取失败: " + e.getMessage());
 		}
 	}

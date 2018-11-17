@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.xt.sentense.constant.Const;
 import com.xt.sentense.constant.Res;
 import com.xt.sentense.entity.Category;
 import com.xt.sentense.entity.CategoryRepository;
@@ -21,7 +22,9 @@ import com.xt.sentense.entity.Sentense;
 import com.xt.sentense.entity.SentenseRepository;
 import com.xt.sentense.entity.User;
 import com.xt.sentense.entity.UserRepository;
+import com.xt.sentense.service.LabelService;
 import com.xt.sentense.service.SentenseService;
+import com.xt.sentense.service.UserService;
 import com.xt.sentense.vo.PageList;
 import com.xt.sentense.vo.SentenseVo;
 import com.xt.sentense.vo.UserVo;
@@ -37,6 +40,10 @@ public class SentenseApiController {
 	private SentenseRepository sentenseRepository;
 	@Autowired
 	private SentenseService sentenseService;
+	@Autowired
+	private LabelService labelService;
+	@Autowired
+	private UserService userService;
 	
 	@RequestMapping("/add.api")
 	public Res add(Sentense sentense){
@@ -45,6 +52,8 @@ public class SentenseApiController {
 		try{
 			sentense = sentenseRepository.saveAndFlush(sentense);
 			if(sentense != null){
+				labelService.add(sentense.getLabels()); //将提取的标签加入到标签数据库
+				userService.addGrade(sentense.getUserId(), Const.ADD_GRADE); //发表一个句子积分加积分
 				return Res.NEW().code(Res.SUCCESS).msg("发布成功").data(sentense);
 			}else{
 				return Res.NEW().code(Res.ERROR).msg("发布失败").data(sentense);
@@ -100,10 +109,17 @@ public class SentenseApiController {
 	public Res finds(int page, int size){
 		return Res.NEW().code(Res.SUCCESS).msg("ok").data(sentenseService.finds(page - 1, size));
 	}
+	
+	@RequestMapping("/search.api")
+	public Res search(int page, int size, String scene, String label, String content){
+		return Res.NEW().code(Res.SUCCESS).msg("ok").data(sentenseService.search(page - 1, size, scene, label, content));
+	}
+	
 	@RequestMapping("/findByCatgegoryId.api")
 	public Res findByCatgegoryId(int page, int size, Long categoryId){
 		return Res.NEW().code(Res.SUCCESS).msg("ok").data(sentenseService.findByCatgegoryId(page - 1, size, categoryId));
 	}
+	
 	@RequestMapping("/findByUserId.api")
 	public Res findByUserId(int page, int size, Long userId){
 		return Res.NEW().code(Res.SUCCESS).msg("ok").data(sentenseService.findByUserId(page - 1, size, userId));
@@ -114,6 +130,7 @@ public class SentenseApiController {
 		try{
 			SentenseVo u = sentenseService.findById(id);
 			if(u != null){
+				labelService.hot(u.getLabels()); //给相应的标签加热度
 				return Res.NEW().code(Res.SUCCESS).msg("Ok").data(u);
 			}else{
 				return Res.NEW().code(Res.ERROR).msg("获取失败,没有此记录");

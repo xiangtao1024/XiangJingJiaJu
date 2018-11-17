@@ -12,4 +12,6 @@ public class Const {
 	public static final String AUTH_SIGN = "AUTH_VALUE";
 	//应用文件存放目录(包括缓存，上传的文件)
 	public static final String APP_FILE = "c://sentense";
+	
+	public static final int ADD_GRADE = 20;
 }

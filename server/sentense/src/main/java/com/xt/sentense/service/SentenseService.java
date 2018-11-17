@@ -10,16 +10,22 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.swing.text.html.HTMLDocument.HTMLReader.SpecialAction;
 
+import org.apache.logging.log4j.util.Strings;
+import org.nutz.dao.Dao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.xt.sentense.entity.Category;
 import com.xt.sentense.entity.CategoryRepository;
+import com.xt.sentense.entity.CollectionRepository;
+import com.xt.sentense.entity.DianZanRepository;
 import com.xt.sentense.entity.Sentense;
 import com.xt.sentense.entity.SentenseRepository;
 import com.xt.sentense.entity.User;
@@ -35,20 +41,45 @@ public class SentenseService {
 	private CategoryRepository categoryRepository;
 	@Autowired
 	private UserRepository  userRepository;
+	@Autowired
+	private DianZanRepository dianZanRepository;
+	@Autowired
+	private CollectionRepository collectionRepository;
 	
 	public PageList finds(int page, int size){
-		Pageable p = PageRequest.of(page, size);
+		Sort sort = new Sort(Direction.DESC, "createTime");
+		Pageable p = PageRequest.of(page, size, sort);
 		PageList datas = new PageList(sentenseRepository.findAll(p));
 		return bindOtherData(datas);
 	}
+	
+	public PageList search(int page, int size, String scene, String label, String content){
+		Sort sort = new Sort(Direction.DESC, "create_time");
+		Pageable p = PageRequest.of(page, size, sort);
+		PageList datas = null;
+		if(Strings.isEmpty(scene)){
+			datas = new PageList(sentenseRepository.searchByScene("%"+ scene + "%", p));
+		}else if(Strings.isEmpty(label)){
+			datas = new PageList(sentenseRepository.searchByLabel("%"+ label + "%", p));
+		}else if(Strings.isEmpty(content)){
+			datas = new PageList(sentenseRepository.searchByContent("%"+ content + "%", p));
+		}
+		if(datas == null){
+			return null;
+		}
+		return bindOtherData(datas);
+	}
+	
 	public PageList findByCatgegoryId(int page, int size, Long categoryId){
-		Pageable p = PageRequest.of(page, size);
+		Sort sort = new Sort(Direction.DESC, "createTime");
+		Pageable p = PageRequest.of(page, size, sort);
 		PageList datas = new PageList(sentenseRepository.findByCategoryId(categoryId, p));
 		return bindOtherData(datas);
 	}
 	
 	public PageList findByUserId(int page, int size, Long userId){
-		Pageable p = PageRequest.of(page, size);
+		Sort sort = new Sort(Direction.DESC, "createTime");
+		Pageable p = PageRequest.of(page, size, sort);
 		PageList datas = new PageList(sentenseRepository.findByUserId(userId, p));
 		return bindOtherData(datas);
 	}
@@ -79,7 +110,25 @@ public class SentenseService {
 	
 	public SentenseVo findById(Long id){
 		Optional<Sentense> u = sentenseRepository.findById(id);
-		SentenseVo sv = SentenseVo.NEW(u.isPresent()?u.get() : null);
-		return sv;
+		if(u.isPresent()){
+			Sentense se = u.get();
+			Optional<Category> category = categoryRepository.findById(se.getCategoryId());
+			Optional<User> user = userRepository.findById(se.getUserId());
+			SentenseVo sv = SentenseVo.NEW(se);
+			sv.setCategory(category.isPresent()?category.get():null);
+			sv.setUser(user.isPresent()?user.get(): null);
+			return sv;
+		}else{
+			return null;
+		}
+	}
+	
+	public void addComment(Long sentenseId){
+		Optional<Sentense> se = sentenseRepository.findById(sentenseId);
+		if(se.isPresent()){
+			Sentense sentense = se.get();
+			sentense.setCommentNum(sentense.getCommentNum() + 1);
+			sentenseRepository.saveAndFlush(sentense);
+		}
 	}
 }
