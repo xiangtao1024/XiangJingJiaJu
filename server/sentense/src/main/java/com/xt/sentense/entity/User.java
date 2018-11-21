@@ -24,6 +24,8 @@ public class User implements Serializable{
 	@Column
 	private String nickname;
 	@Column
+	private String qianming;
+	@Column
 	private String icon;
 	@Column(nullable=false, unique=true)
 	private String phone;
@@ -111,10 +113,18 @@ public class User implements Serializable{
 	public void setGrade(int grade) {
 		this.grade = grade;
 	}
+	
+	public String getQianming() {
+		return qianming;
+	}
+	public void setQianming(String qianming) {
+		this.qianming = qianming;
+	}
+	
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", name=" + name + ", nickname=" + nickname + ", icon=" + icon + ", phone=" + phone
-				+ ", password=" + password + ", salt=" + salt + ", phoneState=" + phoneState + ", grade=" + grade
-				+ ", createTime=" + createTime + ", updateTime=" + updateTime + "]";
+		return "User [id=" + id + ", name=" + name + ", nickname=" + nickname + ", qianming=" + qianming + ", icon="
+				+ icon + ", phone=" + phone + ", password=" + password + ", salt=" + salt + ", phoneState=" + phoneState
+				+ ", grade=" + grade + ", createTime=" + createTime + ", updateTime=" + updateTime + "]";
 	}
 }

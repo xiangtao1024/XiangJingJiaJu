@@ -57,11 +57,15 @@ public class SentenseService {
 		Sort sort = new Sort(Direction.DESC, "create_time");
 		Pageable p = PageRequest.of(page, size, sort);
 		PageList datas = null;
-		if(Strings.isEmpty(scene)){
+		
+		if(!Strings.isEmpty(scene)){
+			System.out.println("scene: " + scene);
 			datas = new PageList(sentenseRepository.searchByScene("%"+ scene + "%", p));
-		}else if(Strings.isEmpty(label)){
+		}else if(!Strings.isEmpty(label)){
+			System.out.println("label: " + label);
 			datas = new PageList(sentenseRepository.searchByLabel("%"+ label + "%", p));
-		}else if(Strings.isEmpty(content)){
+		}else if(!Strings.isEmpty(content)){
+			System.out.println("content: " + content);
 			datas = new PageList(sentenseRepository.searchByContent("%"+ content + "%", p));
 		}
 		if(datas == null){
