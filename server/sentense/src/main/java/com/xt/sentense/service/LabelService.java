@@ -15,9 +15,10 @@ public class LabelService {
 	
 	public void add(String labels){
 		//想去考那，世界，德才
-		String[] labelArr = labels.split("，");
+		String[] labelArr = labels.split(",");
 		if(labelArr != null){
 			for(String label : labelArr){
+				label = label.trim();
 				Label la = labelRepository.findByName(label);
 				if(la == null){
 					la = new Label();

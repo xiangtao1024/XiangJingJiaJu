@@ -9,17 +9,12 @@
 		<el-menu :default-active="activeIndex" mode="horizontal" @select="handleNavSelect">
 			<el-menu-item index="1">首页</el-menu-item>
 			<el-menu-item index="2">分类</el-menu-item>
-			<el-menu-item index="3">心情</el-menu-item>
+			<el-menu-item index="3">场景</el-menu-item>
 			<el-menu-item index="4">标签</el-menu-item>
 			<el-menu-item index="5">句子</el-menu-item>
 			<el-menu-item index="6">用户</el-menu-item>
 			<el-menu-item index="7">评论</el-menu-item>
-			<el-submenu index="5">
-			    <template slot="title">设置</template>
-			    <el-menu-item index="5-1">设置1</el-menu-item>
-			    <el-menu-item index="5-2">设置2</el-menu-item>
-			    <el-menu-item index="5-3">设置3</el-menu-item>
-			</el-submenu>
+			<el-menu-item index="8">句子采集</el-menu-item>
 		</el-menu>
 	</el-main>
 </el-container>

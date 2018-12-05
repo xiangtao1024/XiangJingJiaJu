@@ -40,6 +40,9 @@ var Application = {
 			case "7":
 				location.href = "/admin/comment/index.html";
 				break;
+			case "8":
+				location.href = "/admin/caiji/index.html";
+				break;
 			default:
 				console.log(index,"default")
 				break;

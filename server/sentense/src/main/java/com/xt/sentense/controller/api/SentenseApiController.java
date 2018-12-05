@@ -49,23 +49,7 @@ public class SentenseApiController {
 	public Res add(Sentense sentense){
 		sentense.setCreateTime(new Date());
 		sentense.setUpdateTime(new Date());
-		try{
-			sentense = sentenseRepository.saveAndFlush(sentense);
-			if(sentense != null){
-				labelService.add(sentense.getLabels()); //将提取的标签加入到标签数据库
-				userService.addGrade(sentense.getUserId(), Const.ADD_GRADE); //发表一个句子积分加积分
-				return Res.NEW().code(Res.SUCCESS).msg("发布成功").data(sentense);
-			}else{
-				return Res.NEW().code(Res.ERROR).msg("发布失败").data(sentense);
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-			if(e.getMessage().matches(".*constraint.*UK.*")){
-				return Res.NEW().code(Res.ERROR).msg("发布失败: 该条数据已经存在");
-			}else{
-				return Res.NEW().code(Res.ERROR).msg("发布失败: " + e.getMessage());
-			}
-		}
+		return sentenseService.add(sentense);
 	}
 	@RequestMapping("/update.api")
 	public Res update(Sentense sentense){

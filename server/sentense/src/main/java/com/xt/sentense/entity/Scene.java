@@ -66,7 +66,7 @@ public class Scene implements Serializable{
 	}
 	@Override
 	public String toString() {
-		return "Category [id=" + id + ", name=" + name + ", createTime=" + createTime + ", updateTime=" + updateTime
+		return "Scene [id=" + id + ", name=" + name + ", createTime=" + createTime + ", updateTime=" + updateTime
 				+ "]";
 	}
 }

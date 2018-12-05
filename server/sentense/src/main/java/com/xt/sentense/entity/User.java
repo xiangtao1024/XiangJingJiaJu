@@ -37,6 +37,8 @@ public class User implements Serializable{
 	private int phoneState;
 	@Column
 	private int grade; //积分
+	@Column
+	private int type; //类型 0: 普通用户 -1: 机器人
 	
 	@Column(nullable=false)
 	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
@@ -121,10 +123,18 @@ public class User implements Serializable{
 		this.qianming = qianming;
 	}
 	
+	public int getType() {
+		return type;
+	}
+	public void setType(int type) {
+		this.type = type;
+	}
+	
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", name=" + name + ", nickname=" + nickname + ", qianming=" + qianming + ", icon="
 				+ icon + ", phone=" + phone + ", password=" + password + ", salt=" + salt + ", phoneState=" + phoneState
-				+ ", grade=" + grade + ", createTime=" + createTime + ", updateTime=" + updateTime + "]";
+				+ ", grade=" + grade + ", type=" + type + ", createTime=" + createTime + ", updateTime=" + updateTime
+				+ "]";
 	}
 }

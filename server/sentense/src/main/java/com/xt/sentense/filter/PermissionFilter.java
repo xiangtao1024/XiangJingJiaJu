@@ -45,7 +45,8 @@ public class PermissionFilter implements Filter{
 		noFilterUrl.add(".css");
 		noFilterUrl.add(".js");
 		noFilterUrl.add(".ico");
-		//noFilterUrl.add(".woff");
+		noFilterUrl.add(".woff");
+		noFilterUrl.add(".ttf");
 	}
 	/**
 	 * 先检查此次请求是否需要验证，需要验证的话，根据请求调用网页请求

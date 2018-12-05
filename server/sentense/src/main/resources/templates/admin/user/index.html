@@ -118,11 +118,6 @@
 						      width="100">
 						    </el-table-column>
 						    <el-table-column
-						      prop="password"
-						      label="密码"
-						      width="100">
-						    </el-table-column>
-						    <el-table-column
 						      prop="nickname"
 						      label="昵称"
 						      width="160">
@@ -325,7 +320,8 @@ var User = {
 			type: "post",
 			data: {
 				page: vue.pageCurrent,
-				size: vue.pageSize
+				size: vue.pageSize,
+				type: -1
 			},
 			headers: Apicheck.getHeaders(),
 			success: function(res){

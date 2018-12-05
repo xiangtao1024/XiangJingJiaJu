@@ -108,9 +108,9 @@ public class UserApiController {
 	}
 	
 	@RequestMapping("/finds.api")
-	public Res finds(int page, int size){
-		Pageable p = new PageRequest(page - 1, size);
-		Page<User> datas = userRepository.findAll(p);
+	public Res finds(int page, int size, int type){
+		Pageable p = PageRequest.of(page - 1, size);
+		Page<User> datas = userRepository.findByType(type, p);
 		return Res.NEW().code(Res.SUCCESS).msg("ok").data(datas);
 	}
 	

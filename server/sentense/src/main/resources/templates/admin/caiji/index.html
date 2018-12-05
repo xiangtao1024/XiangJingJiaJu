@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <% include("../../common/common_css.html"){} %>
+</head>
+<body>
+<div id="app">
+	<el-row>
+		<el-col :md="{span:22, offset:1}" :lg="{span:14, offset:4}" style="background: #fff;min-height: 800px">
+			<% include("../../common/header.html"){} %>	
+			
+			<el-container>
+				<el-main>
+					<el-row>
+						<el-button type="primary" @click="start()">启动</el-button>
+  						<el-button type="success" @click="shuaXin()">获取采集信息</el-button>
+					</el-row>
+					<el-row>
+						<p v-html="btnInfo"></p>
+					</el-row>
+					<el-row>
+						<el-tree
+						  :data="linkMapStatus"
+						  show-checkbox
+						  node-key="id"
+						  :default-expand-all="true"
+						  :props="defaultProps">
+						</el-tree>
+					</el-row>
+				</el-main>
+			</el-container>	
+		</el-col>
+	</el-row>
+</div>
+</body>
+<% include("../../common/common_js.html"){} %>
+<script>
+
+var vue = new Vue({
+	el: '#app',
+    data: {
+    	activeIndex: '8',
+    	linkMapStatus:[],
+    	btnInfo: '消息： ',
+    	defaultProps: {
+         	children: 'children',
+         	label: 'label'
+       }
+    },
+    methods: {
+    	handleNavSelect(key, keyPath) {
+    		Application.openNav(key)
+   	    },
+   	 	start(){
+   	    	Caiji.start();
+   	    },
+   	 	shuaXin(){
+   	    	Caiji.shuaXin();
+   	    }
+   },
+   mounted: function(){
+	  
+   }
+})
+
+var Caiji = {
+	url: '/caiji',
+	start(){
+		$.ajax({
+			url: this.url + "/start.api",
+			type: "post",
+			headers: Apicheck.getHeaders(),
+			success: function(res){
+				console.log(res);
+				vue.$notify({
+			        title: '采集提示',
+			        message: res.msg,
+			        type: 'success'
+			    });
+			}
+		});
+	},
+	shuaXin(){
+		$.ajax({
+			url: this.url + "/getInfo.api",
+			type: "post",
+			headers: Apicheck.getHeaders(),
+			success: function(res){
+				console.log(res);
+				vue.linkMapStatus = res.data.status;
+				vue.btnInfo = res.data.info;
+			}
+		});
+	},
+}
+</script>
+</html>

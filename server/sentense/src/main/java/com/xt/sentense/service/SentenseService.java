@@ -22,6 +22,8 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.xt.sentense.constant.Const;
+import com.xt.sentense.constant.Res;
 import com.xt.sentense.entity.Category;
 import com.xt.sentense.entity.CategoryRepository;
 import com.xt.sentense.entity.CollectionRepository;
@@ -45,6 +47,30 @@ public class SentenseService {
 	private DianZanRepository dianZanRepository;
 	@Autowired
 	private CollectionRepository collectionRepository;
+	@Autowired
+	private LabelService labelService;
+	@Autowired
+	private UserService userService;
+	
+	public Res add(Sentense sentense){
+		try{
+			sentense = sentenseRepository.saveAndFlush(sentense);
+			if(sentense != null){
+				labelService.add(sentense.getLabels()); //将提取的标签加入到标签数据库
+				userService.addGrade(sentense.getUserId(), Const.ADD_GRADE); //发表一个句子积分加积分
+				return Res.NEW().code(Res.SUCCESS).msg("发布成功").data(sentense);
+			}else{
+				return Res.NEW().code(Res.ERROR).msg("发布失败").data(sentense);
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			if(e.getMessage().matches(".*constraint.*UK.*")){
+				return Res.NEW().code(Res.ERROR).msg("发布失败: 该条数据已经存在");
+			}else{
+				return Res.NEW().code(Res.ERROR).msg("发布失败: " + e.getMessage());
+			}
+		}
+	}
 	
 	public PageList finds(int page, int size){
 		Sort sort = new Sort(Direction.DESC, "createTime");
